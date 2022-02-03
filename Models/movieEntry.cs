@@ -12,7 +12,8 @@ namespace MissionFour.Models
         [Required]
         public int movieID { get; set; }
         [Required]
-        public string category { get; set; }
+        public int categoryID { get; set; }
+        public mCat category { get; set; }
         [Required]
         public string title { get; set; }
         [Required]

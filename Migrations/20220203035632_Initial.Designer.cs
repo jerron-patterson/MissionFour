@@ -8,7 +8,7 @@ using MissionFour.Models;
 namespace MissionFour.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    [Migration("20220127044530_Initial")]
+    [Migration("20220203035632_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,15 +17,60 @@ namespace MissionFour.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.22");
 
+            modelBuilder.Entity("MissionFour.Models.mCat", b =>
+                {
+                    b.Property<int>("categoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("categoryName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("categoryID");
+
+                    b.ToTable("categ");
+
+                    b.HasData(
+                        new
+                        {
+                            categoryID = 1,
+                            categoryName = "Action"
+                        },
+                        new
+                        {
+                            categoryID = 2,
+                            categoryName = "Romance"
+                        },
+                        new
+                        {
+                            categoryID = 3,
+                            categoryName = "Comedy"
+                        },
+                        new
+                        {
+                            categoryID = 4,
+                            categoryName = "Horror"
+                        },
+                        new
+                        {
+                            categoryID = 5,
+                            categoryName = "SciFi"
+                        },
+                        new
+                        {
+                            categoryID = 6,
+                            categoryName = "Other"
+                        });
+                });
+
             modelBuilder.Entity("MissionFour.Models.movieEntry", b =>
                 {
                     b.Property<int>("movieID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("category")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("categoryID")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("director")
                         .IsRequired()
@@ -53,13 +98,15 @@ namespace MissionFour.Migrations
 
                     b.HasKey("movieID");
 
+                    b.HasIndex("categoryID");
+
                     b.ToTable("entry");
 
                     b.HasData(
                         new
                         {
                             movieID = 1,
-                            category = "Action",
+                            categoryID = 1,
                             director = "Jim Hentsen",
                             edited = false,
                             rating = "PG-13",
@@ -69,7 +116,7 @@ namespace MissionFour.Migrations
                         new
                         {
                             movieID = 2,
-                            category = "Action",
+                            categoryID = 1,
                             director = "Jim Hentsen",
                             edited = false,
                             rating = "PG-13",
@@ -79,13 +126,22 @@ namespace MissionFour.Migrations
                         new
                         {
                             movieID = 3,
-                            category = "Action",
+                            categoryID = 1,
                             director = "Jim Hentsen",
                             edited = false,
                             rating = "PG-13",
                             title = "End Game",
                             year = (short)2020
                         });
+                });
+
+            modelBuilder.Entity("MissionFour.Models.movieEntry", b =>
+                {
+                    b.HasOne("MissionFour.Models.mCat", "category")
+                        .WithMany()
+                        .HasForeignKey("categoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

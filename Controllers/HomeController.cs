@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MissionFour.Models;
 using System;
@@ -32,20 +33,65 @@ namespace MissionFour.Controllers
         [HttpGet]
         public IActionResult movieForm()
         {
+            ViewBag.Cate = _conContext.categ.ToList();
             return View();
         }
         [HttpPost]
         public IActionResult movieForm(movieEntry mer)
         {
-            _conContext.Add(mer);
-            _conContext.SaveChanges();
-            return View();
+            if (ModelState.IsValid)
+            {
+                ViewBag.Cate = _conContext.categ.ToList();
+                _conContext.Add(mer);
+                _conContext.SaveChanges();
+                return View();
+            }
+            else
+            {
+                ViewBag.Cate = _conContext.categ.ToList();
+                return View();
+            }
+
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpGet]
+        public IActionResult movieTable()
+        {
+            var applications = _conContext.entry.Include(x => x.category).ToList();
+            return View(applications);
+        }
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            ViewBag.Cate = _conContext.categ.ToList();
+            var ent = _conContext.entry.Single(x => x.movieID == id);
+            return View("movieForm", ent);
+        }
+        [HttpPost]
+        public IActionResult Edit(movieEntry ed)
+        {
+            _conContext.Update(ed);
+            _conContext.SaveChanges();
+            return RedirectToAction("movieTable");
+        }
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var ent = _conContext.entry.Single(x => x.movieID == id);
+            return View(ent);
+        }
+        [HttpPost]
+        public IActionResult Delete(movieEntry ed)
+        {
+            _conContext.Remove(ed);
+            _conContext.SaveChanges();
+            return RedirectToAction("movieTable");
         }
     }
 }

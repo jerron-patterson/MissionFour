@@ -4,14 +4,23 @@
 @{
 }
 @model MissionFour.Models.movieEntry
+
 <div>
     <h1>Add Movies Here</h1>
     <p>All * categories are required.</p>
 </div>
 <div>
     <form method="post">
+        <div asp-validation-summary="All"></div>
         <label asp-for="category">Movie Category*</label>
-        <input asp-for="category" /><br />
+        <select asp-for="categoryID">
+            <option value="">Select a category</option>
+            @foreach (mCat mklst in ViewBag.Cate)
+            {
+                <option value="@mklst.categoryID">@mklst.categoryName</option>
+            }
+        </select>
+        <br />
         <label asp-for="title">Movie Title*</label>
         <input asp-for="title" /><br />
         <label asp-for="year">Release Year*</label>
